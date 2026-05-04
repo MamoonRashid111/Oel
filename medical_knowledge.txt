@@ -1,0 +1,48 @@
+# Clinical Knowledge Base: Endocrinology
+In the field of Endocrinology, monitoring blood glucose levels is essential for diagnosing metabolic disorders. 
+- Normal fasting blood glucose levels are typically between 70-99 mg/dL. 
+- Prediabetes is characterized by fasting blood glucose levels ranging from 100-125 mg/dL. 
+- A fasting blood glucose level of 126 mg/dL or higher is diagnostic for Diabetes mellitus.
+- Blood glucose levels exceeding 300 mg/dL are considered critically high and require immediate medical intervention.
+- Diabetes mellitus is a chronic metabolic disorder marked by persistently high blood sugar levels.
+
+# Clinical Knowledge Base: Cardiology
+Cardiovascular health is assessed through vital signs and symptom evaluation.
+- A resting heart rate above 120 bpm is considered abnormal (tachycardia) and requires a clinical evaluation.
+- Hypertension, or high blood pressure, is defined as having a systolic pressure ≥130 mmHg or diastolic pressure ≥80 mmHg. The normal range is less than 120/80 mmHg.
+- Chest pain is a high-priority symptom that can indicate serious conditions like angina or a heart attack (myocardial infarction).
+- Chest pain combined with shortness of breath is a critical emergency requiring immediate medical care.
+- Preventing cardiovascular disease involves a heart-healthy diet, regular physical exercise, and avoiding smoking.
+
+# Clinical Knowledge Base: Pulmonology
+Respiratory health monitoring focuses on oxygenation and chronic conditions.
+- Oxygen saturation (SpO2) levels below 90% indicate respiratory distress and require supplemental oxygen or medical review.
+- Asthma is a chronic respiratory condition characterized by wheezing, coughing, and shortness of breath. Common treatments include bronchodilators and inhaled corticosteroids.
+- Chronic Obstructive Pulmonary Disease (COPD) is a progressive lung condition that causes long-term breathing difficulty.
+- Smoking cessation is the most important preventive measure for maintaining lung health.
+
+# Clinical Knowledge Base: Neurology
+Neurological emergencies and conditions require rapid identification.
+- A severe headache accompanied by sudden vision loss is a potential neurological emergency.
+- Migraine is a complex neurological disorder involving severe headaches, throbbing pain, sensitivity to light/sound, and nausea or vomiting.
+- Epilepsy involves recurrent seizures. Any active seizure requires immediate medical attention and long-term medication management.
+- Sudden vision loss, weakness, confusion, or difficulty speaking are major warning signs of a Stroke.
+
+# Clinical Knowledge Base: General Medicine & Safety
+- Sepsis is a life-threatening, systemic response to infection that requires immediate emergency treatment.
+- Anaphylaxis is a severe, life-threatening allergic reaction causing breathing difficulties; it requires immediate treatment with epinephrine.
+- Antibiotics are specifically used to treat bacterial infections and are ineffective against viral infections like the common cold or flu.
+- Fever in infants younger than 3 months is a high-priority concern that requires immediate medical evaluation.
+- Regular hand washing is one of the most effective ways to prevent the transmission of infectious germs.
+- Unexplained weight loss, persistent fatigue, or chronic pain can be warning signs of serious conditions, including cancer, and should be evaluated by a doctor.
+- Regular screenings, such as mammograms and pap smears, are critical for early detection of breast and cervical cancer.
+- Blood in the urine (hematuria) is a significant symptom that requires evaluation for urinary tract infections or kidney issues.
+- A body temperature of 98.6°F (37°C) is the standard average for a healthy adult.
+
+# Clinical Knowledge Base: Common Ailments & Medications
+- Headache (Tension/General): For temporary relief of mild to moderate headache pain, Paracetamol (commonly known as Panadol) is frequently recommended. Typical adult dosage is 500mg to 1000mg every 4-6 hours.
+- Allergies (Seasonal/Hay Fever): Antihistamines such as Cetirizine or Loratadine are effective for reducing sneezing, itching, and runny nose.
+- Common Cold: Treatment focuses on symptom relief. Rest, hydration, and over-the-counter decongestants may be used.
+- Acid Reflux (Heartburn): Antacids or H2 blockers can provide relief for occasional indigestion.
+- Muscle Pain: Ibuprofen or other non-steroidal anti-inflammatory drugs (NSAIDs) can help reduce inflammation and pain.
+- **SAFETY NOTE**: All medication recommendations must be verified against the patient's allergy history and current prescriptions.

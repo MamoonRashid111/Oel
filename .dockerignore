@@ -1,0 +1,15 @@
+venv/
+.env
+.git
+.github
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.db
+*.sqlite
+chroma_db/
+temp/
+docker_build.log
+eval_results.json
+feedback_log.db

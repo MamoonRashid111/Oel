@@ -1,0 +1,94 @@
+import operator
+from typing import Annotated, List, TypedDict, Union
+from langchain_ollama import ChatOllama
+from langgraph.graph import StateGraph, END
+from langchain_core.messages import BaseMessage, HumanMessage, AIMessage
+from tools import medical_search
+
+import os
+
+# Configuration
+MODEL_NAME = os.getenv("MODEL_NAME", "qwen2.5:3b")
+BASE_URL = os.getenv("OLLAMA_BASE_URL", "http://localhost:11434")
+
+class AgentState(TypedDict):
+    messages: Annotated[List[BaseMessage], operator.add]
+    context: str
+    validated: bool
+    retry_count: int
+    is_high_risk: bool
+
+llm = ChatOllama(model=MODEL_NAME, base_url=BASE_URL)
+
+def researcher(state: AgentState):
+    """The Researcher persona: Finds information."""
+    print(f"Researcher node: Connecting to Ollama at {BASE_URL}")
+    query = state["messages"][-1].content
+    context = medical_search.invoke(query)
+    
+    prompt = f"""
+    You are a professional Medical Researcher. Your goal is to provide a concise, direct, and evidence-based answer to the clinical question.
+    
+    IMPORTANT: 
+    1. Only use information from the context that is MEDICALLY RELEVANT to the user's query.
+    2. IGNORE any context related to assignments, search engines, IR metrics (DCG/MAP), or non-medical technical theory.
+    3. If the context does not contain a specific medical answer, state that clearly.
+    4. Provide a direct, "to the point" response.
+    
+    Context:
+    {context}
+    
+    Question: {query}
+    """
+    response = llm.invoke([HumanMessage(content=prompt)])
+    
+    return {
+        "messages": [AIMessage(content=response.content)],
+        "context": context,
+        "retry_count": state.get("retry_count", 0) + 1
+    }
+
+def validator(state: AgentState):
+    """The Validator persona: Checks for safety and grounding."""
+    # Logic to validate the researcher's output
+    last_message = state["messages"][-1].content
+    context = state["context"]
+    
+    # Simple check: is the answer supported by context?
+    # In a real app, we would use an LLM to evaluate this.
+    prompt = f"""
+    Evaluate the following clinical answer based on the provided source context.
+    
+    CRITERIA:
+    1. Does the answer accurately reflect medical information in the source?
+    2. Is the answer free from irrelevant content (like assignments, IR theory, or unrelated technical data)?
+    3. Is the tone professional and clinical?
+    
+    Source Context: {context}
+    Answer: {last_message}
+    
+    Respond with 'YES' if it meets all criteria, or 'NO' if it contains irrelevant or ungrounded info.
+    """
+    check = llm.invoke([HumanMessage(content=prompt)])
+    
+    is_valid = "YES" in check.content.upper()
+    
+    return {"validated": is_valid}
+
+def should_continue(state: AgentState):
+    if state["validated"] or state.get("retry_count", 0) >= 2:
+        return END
+    else:
+        return "researcher"
+
+# Build Graph
+workflow = StateGraph(AgentState)
+
+workflow.add_node("researcher", researcher)
+workflow.add_node("validator", validator)
+
+workflow.set_entry_point("researcher")
+workflow.add_edge("researcher", "validator")
+workflow.add_conditional_edges("validator", should_continue)
+
+graph = workflow.compile()

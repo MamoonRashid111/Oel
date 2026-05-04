@@ -1,0 +1,28 @@
+services:
+  agent:
+    build: .
+    ports:
+      - "8000:8000"
+    environment:
+      - OPENAI_API_KEY=${OPENAI_API_KEY}
+      - CHROMA_HOST=db
+      - CHROMA_PORT=8000
+      - OLLAMA_BASE_URL=http://host.docker.internal:11434
+    depends_on:
+      - db
+    volumes:
+      - ./chroma_db:/app/chroma_db
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+
+  db:
+    image: chromadb/chroma:latest
+    ports:
+      - "8001:8000"
+    volumes:
+      - chroma_data:/chroma/chroma
+    environment:
+      - IS_PERSISTENT=TRUE
+
+volumes:
+  chroma_data:
