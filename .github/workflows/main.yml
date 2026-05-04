@@ -10,10 +10,6 @@ jobs:
   evaluate:
     runs-on: ubuntu-latest
 
-    services:
-      # Optional: Start Chroma or other dependencies if needed
-      # For now, we assume local persistence or mocked data for CI
-      
     steps:
     - uses: actions/checkout@v3
 
