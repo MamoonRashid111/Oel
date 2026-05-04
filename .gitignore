@@ -157,3 +157,7 @@ Thumbs.db
 eval_results.json
 *.log
 checkpoint.sqlite
+chroma_db/
+*.db
+temp/
+scratch/
