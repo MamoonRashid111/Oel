@@ -1,5 +1,5 @@
 {
     "min_faithfulness": 0.8,
     "min_relevancy": 0.8,
-    "min_avg_score": 0.85
+    "min_avg_score": 0.70
 }

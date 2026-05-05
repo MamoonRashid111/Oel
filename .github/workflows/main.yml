@@ -32,6 +32,9 @@ jobs:
     - name: Pull Ollama Model
       run: ollama pull qwen2.5:3b
 
+    - name: Ingest Data into Vector Store
+      run: python ingest_data.py
+
     - name: Run Evaluation Gate
       env:
         OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
