@@ -74,9 +74,24 @@ async def approve(request: ApproveRequest):
         traceback.print_exc()
         raise HTTPException(status_code=500, detail=str(e))
 
-@app.get("/health")
-async def health():
-    return {"status": "healthy"}
+from fastapi.responses import StreamingResponse
+import json
+
+@app.post("/stream")
+async def stream_chat(request: ChatRequest):
+    thread_id = request.thread_id or str(uuid.uuid4())
+    config = {"configurable": {"thread_id": thread_id}}
+    
+    async def event_generator():
+        async for chunk in secured_graph.astream(
+            {"messages": [HumanMessage(content=request.message)]},
+            config,
+            stream_mode="updates"
+        ):
+            # Format as Server-Sent Events (SSE)
+            yield f"data: {json.dumps(chunk)}\n\n"
+
+    return StreamingResponse(event_generator(), media_type="text/event-stream")
 
 if __name__ == "__main__":
     import uvicorn

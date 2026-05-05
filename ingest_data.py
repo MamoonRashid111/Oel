@@ -14,8 +14,17 @@ BASE_URL = "http://localhost:11434"
 def get_embeddings():
     return OllamaEmbeddings(model=MODEL_NAME, base_url=BASE_URL)
 
+def ingest_base_knowledge():
+    """Ingests the default medical knowledge file."""
+    base_file = "medical_knowledge.txt"
+    if os.path.exists(base_file):
+        ingest_document(base_file)
+    else:
+        print(f"Base knowledge file {base_file} not found.")
+
 def ingest_document(file_path: str):
     """Ingests a document, chunks it, and adds it to the vector store."""
+    from langchain_community.document_loaders import CSVLoader
     
     # Load document
     if file_path.endswith('.pdf'):
@@ -24,6 +33,8 @@ def ingest_document(file_path: str):
         loader = TextLoader(file_path)
     elif file_path.endswith('.docx'):
         loader = Docx2txtLoader(file_path)
+    elif file_path.endswith('.csv'):
+        loader = CSVLoader(file_path)
     else:
         raise ValueError("Unsupported file format")
 
@@ -54,27 +65,52 @@ def ingest_document(file_path: str):
     vector_store.add_documents(chunks)
     print(f"Successfully ingested {len(chunks)} chunks from {file_path}")
 
-def ingest_base_knowledge():
-    """Ingests the default medical knowledge file after clearing the existing base data."""
-    base_file = "medical_knowledge.txt"
-    if os.path.exists(base_file):
-        print(f"Initializing vector store with base knowledge: {base_file}")
-        embeddings = get_embeddings()
-        vector_store = Chroma(
-            persist_directory=CHROMA_PATH,
-            embedding_function=embeddings,
-            collection_name="medical_docs"
-        )
-        
-        # Clear base knowledge entries to prevent duplicates (by filtering on the source name)
-        # Note: In a simple setup, we can also just delete the collection or the specific source.
-        # Here we'll delete any documents where source_file is medical_knowledge.txt
-        vector_store.delete(where={"source_file": base_file})
-        
-        ingest_document(base_file)
-    else:
-        print(f"Base knowledge file {base_file} not found. Skipping initialization.")
+def ingest_directory(directory_path: str):
+    """Ingests all supported files in a directory."""
+    if not os.path.exists(directory_path):
+        print(f"Directory {directory_path} not found.")
+        return
+
+    print(f"Ingesting files from {directory_path}...")
+    for root, dirs, files in os.walk(directory_path):
+        for file in files:
+            if file.endswith(('.pdf', '.txt', '.docx', '.csv')):
+                file_path = os.path.join(root, file)
+                try:
+                    ingest_document(file_path)
+                except Exception as e:
+                    print(f"Error ingesting {file_path}: {e}")
+
+def reset_and_ingest_all():
+    """Clears the collection and ingests everything."""
+    print("Clearing vector database...")
+    embeddings = get_embeddings()
+    vector_store = Chroma(
+        persist_directory=CHROMA_PATH,
+        embedding_function=embeddings,
+        collection_name="medical_docs"
+    )
+    
+    # Try to delete the collection data
+    try:
+        vector_store.delete_collection()
+        print("Collection cleared.")
+    except Exception as e:
+        print(f"Note: Could not clear collection (it might be empty or locked): {e}")
+
+    # Re-initialize
+    vector_store = Chroma(
+        persist_directory=CHROMA_PATH,
+        embedding_function=embeddings,
+        collection_name="medical_docs"
+    )
+
+    # Ingest base knowledge
+    ingest_base_knowledge()
+    
+    # Ingest project-specific initial data
+    ingest_directory("Initial_Data")
 
 if __name__ == "__main__":
-    # Initialize with base knowledge if the script is run directly
-    ingest_base_knowledge()
+    # Fully reset and ingest everything to ensure clean state
+    reset_and_ingest_all()

@@ -1,0 +1,3 @@
+LangSmith Project: https://smith.langchain.com/o/medical-assistant-lab/projects/main-flow
+Trace ID (Sample): 7f62c38f-a3e7-40e6-b26d-40c45adea51a
+Public Trace Link: https://smith.langchain.com/public/7f62c38f-a3e7-40e6-b26d-40c45adea51a/r

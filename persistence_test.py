@@ -8,24 +8,36 @@ def test_persistence():
     conn = sqlite3.connect("checkpoints.sqlite", check_same_thread=False)
     memory = SqliteSaver(conn)
     
-    # Compile graph with persistence
-    app = graph.with_config(checkpointer=memory)
+    # Note: 'graph' is already compiled in multi_agent_graph, 
+    # but we use the 'secured_graph' version which already has persistence configured.
+    from secured_graph import secured_graph
     
-    config = {"configurable": {"thread_id": "test_thread_1"}}
+    config = {"configurable": {"thread_id": "persistence_demo_final"}}
     
-    # Initial interaction
-    print("--- First Interaction ---")
-    input_msg = HumanMessage(content="What are the symptoms of COVID-19?")
-    for event in app.stream({"messages": [input_msg]}, config):
-        print(event)
+    print("\n[STEP 1] Starting First Session...")
+    input_1 = HumanMessage(content="Hello, my name is Dr. Smith. What is the standard adult dose for Aspirin?")
+    result_1 = secured_graph.invoke({"messages": [input_1]}, config)
+    print(f"Agent Response 1: {result_1['messages'][-1].content[:100]}...")
     
-    # Verify state is saved
-    state = app.get_state(config)
-    print(f"\nSaved messages: {len(state.values['messages'])}")
+    print("\n[STEP 2] Closing and Re-opening Session (Simulating Restart)...")
+    # In a real scenario, the script would end here and be re-run.
+    # We verify by checking the state of the SAME thread_id.
     
-    print("\nPersistence test successful if messages were saved.")
+    print("\n[STEP 3] Resuming Session with same Thread ID...")
+    input_2 = HumanMessage(content="What did I just say my name was?")
+    result_2 = secured_graph.invoke({"messages": [input_2]}, config)
+    
+    print(f"Agent Response 2: {result_2['messages'][-1].content}")
+    
+    # Debug: Print entire message history
+    print("\n--- Full Message History ---")
+    for m in result_2['messages']:
+        print(f"{type(m).__name__}: {m.content[:50]}...")
+    
+    if "Smith" in result_2['messages'][-1].content:
+        print("\nSUCCESS: Persistence Verified. The agent remembered the name across interactions.")
+    else:
+        print("\nFAILURE: Persistence Failed. The agent forgot the name.")
 
 if __name__ == "__main__":
-    # Note: Requires Ollama to be running and documents to be ingested for a full test.
-    # test_persistence()
-    pass
+    test_persistence()

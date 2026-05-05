@@ -189,8 +189,9 @@ if st.session_state.pending_approval:
         if st.button("✅ Approve & Release", use_container_width=True):
             with st.spinner("Finalizing Clinical Protocol..."):
                 try:
+                    API_URL = os.getenv("API_URL", "http://localhost:8000")
                     resp = requests.post(
-                        "http://localhost:8000/approve",
+                        f"{API_URL}/approve",
                         json={"thread_id": st.session_state.current_thread},
                         timeout=30
                     )
@@ -242,8 +243,9 @@ if prompt := st.chat_input("Initiate clinical query (e.g., 'From Doc, summarize 
     with st.chat_message("assistant"):
         with st.status("📡 Orchestrating Agent Reasoning...", expanded=True) as status:
             try:
+                API_URL = os.getenv("API_URL", "http://localhost:8000")
                 response = requests.post(
-                    "http://localhost:8000/chat",
+                    f"{API_URL}/chat",
                     json={"message": prompt, "thread_id": thread_id},
                     timeout=90
                 )

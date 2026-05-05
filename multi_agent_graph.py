@@ -23,24 +23,29 @@ llm = ChatOllama(model=MODEL_NAME, base_url=BASE_URL)
 def researcher(state: AgentState):
     """The Researcher persona: Finds information."""
     print(f"Researcher node: Connecting to Ollama at {BASE_URL}")
+    
+    # Extract the last user message for the search query
     query = state["messages"][-1].content
     context = medical_search.invoke(query)
     
-    prompt = f"""
+    # System instructions for the researcher
+    system_instructions = f"""
     You are a professional Medical Researcher. Your goal is to provide a concise, direct, and evidence-based answer to the clinical question.
     
     IMPORTANT: 
     1. Only use information from the context that is MEDICALLY RELEVANT to the user's query.
-    2. IGNORE any context related to assignments, search engines, IR metrics (DCG/MAP), or non-medical technical theory.
+    2. IGNORE any context related to assignments, search engines, or non-medical technical theory.
     3. If the context does not contain a specific medical answer, state that clearly.
-    4. Provide a direct, "to the point" response.
+    4. Maintain the context of the conversation (e.g., remember the user's name if provided).
     
-    Context:
+    Current Medical Context:
     {context}
-    
-    Question: {query}
     """
-    response = llm.invoke([HumanMessage(content=prompt)])
+    
+    # Construct message list: System Instructions + Full History
+    messages = [HumanMessage(content=system_instructions)] + state["messages"]
+    
+    response = llm.invoke(messages)
     
     return {
         "messages": [AIMessage(content=response.content)],
@@ -54,22 +59,22 @@ def validator(state: AgentState):
     last_message = state["messages"][-1].content
     context = state["context"]
     
-    # Simple check: is the answer supported by context?
-    # In a real app, we would use an LLM to evaluate this.
-    prompt = f"""
+    system_instructions = f"""
     Evaluate the following clinical answer based on the provided source context.
     
     CRITERIA:
     1. Does the answer accurately reflect medical information in the source?
-    2. Is the answer free from irrelevant content (like assignments, IR theory, or unrelated technical data)?
+    2. Is the answer free from irrelevant content?
     3. Is the tone professional and clinical?
     
     Source Context: {context}
-    Answer: {last_message}
     
     Respond with 'YES' if it meets all criteria, or 'NO' if it contains irrelevant or ungrounded info.
     """
-    check = llm.invoke([HumanMessage(content=prompt)])
+    
+    # We pass the history but emphasize the last answer check
+    messages = [HumanMessage(content=system_instructions)] + state["messages"]
+    check = llm.invoke(messages)
     
     is_valid = "YES" in check.content.upper()
     

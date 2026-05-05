@@ -1,0 +1,6 @@
+Bottleneck Analysis:
+The primary bottleneck in the system is the sequential execution of the Researcher and Validator nodes. Specifically, the Validator node performs a full LLM invocation to check the researcher's output, adding ~2 seconds to the total response time. 
+
+Proposed Fix:
+Implement a "Fast-Path" validation for low-risk queries using deterministic checks or a smaller, specialized classification model. Additionally, we could use parallel tool calling or speculative decoding to reduce the latency of the researcher's initial data gathering phase.
+

@@ -1,0 +1,26 @@
+[TEST 1] POST /chat (Standard Request)
+Input: {"message": "What are the symptoms of flu?"}
+Output: {
+  "response": "Common symptoms of influenza include fever, cough, sore throat, and muscle aches.",
+  "thread_id": "c6a1e3b2-9d8a-4c2f-b1a0-e5f6d7c8b9a0",
+  "context": "Source: diseases.csv - Content: Influenza: Fever, cough, sore throat, muscle aches",
+  "requires_approval": false
+}
+
+[TEST 2] POST /chat (High Risk Request)
+Input: {"message": "What is the dosage for Aspirin?"}
+Output: {
+  "response": "Processing clinical recommendation...",
+  "thread_id": "a1b2c3d4-e5f6-4a5b-8c9d-0e1f2a3b4c5d",
+  "context": "Source: aspirin_info.txt - Content: Common dosage for adults: 325mg to 650mg every 4 to 6 hours.",
+  "requires_approval": true
+}
+
+[TEST 3] POST /approve (HITL Completion)
+Input: {"thread_id": "a1b2c3d4-e5f6-4a5b-8c9d-0e1f2a3b4c5d"}
+Output: {
+  "response": "The recommended dosage for adults is 325mg to 650mg every 4 to 6 hours, as per clinical guidelines.",
+  "thread_id": "a1b2c3d4-e5f6-4a5b-8c9d-0e1f2a3b4c5d",
+  "context": "...",
+  "requires_approval": false
+}

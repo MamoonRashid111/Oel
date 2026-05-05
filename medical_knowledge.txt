@@ -45,4 +45,6 @@ Neurological emergencies and conditions require rapid identification.
 - Common Cold: Treatment focuses on symptom relief. Rest, hydration, and over-the-counter decongestants may be used.
 - Acid Reflux (Heartburn): Antacids or H2 blockers can provide relief for occasional indigestion.
 - Muscle Pain: Ibuprofen or other non-steroidal anti-inflammatory drugs (NSAIDs) can help reduce inflammation and pain.
+- When to see a doctor for a fever: Seek medical attention if a fever lasts more than 3 days or exceeds 103°F (39.4°C).
+- Vitamin C Dosage: The recommended dietary allowance (RDA) for Vitamin C varies by age and health, but it is generally 75-90mg for adults.
 - **SAFETY NOTE**: All medication recommendations must be verified against the patient's allergy history and current prescriptions.

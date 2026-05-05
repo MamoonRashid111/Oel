@@ -1,0 +1,4 @@
+Clinical Protocol for Hypertension Management:
+1. Lifestyle modifications: Weight loss, DASH diet, sodium reduction.
+2. Pharmacological therapy: ACE inhibitors, ARBs, or Calcium Channel Blockers.
+3. Follow-up: Re-evaluate blood pressure every 2-4 weeks until controlled.
