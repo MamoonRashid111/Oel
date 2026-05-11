@@ -9,7 +9,7 @@ import chromadb
 # Configuration
 CHROMA_PATH = "chroma_db"
 MODEL_NAME = "qwen2.5:3b"
-BASE_URL = "http://localhost:11434"
+BASE_URL = os.getenv("OLLAMA_BASE_URL", "http://localhost:11434")
 
 def get_embeddings():
     return OllamaEmbeddings(model=MODEL_NAME, base_url=BASE_URL)

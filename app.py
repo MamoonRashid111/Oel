@@ -150,19 +150,26 @@ with st.sidebar:
     uploaded_file = st.file_uploader("Upload Clinical Data (PDF/TXT)", type=["pdf", "txt", "docx"], label_visibility="collapsed")
     
     if uploaded_file:
-        with st.spinner("Decrypting & Indexing..."):
-            temp_path = os.path.join("temp", uploaded_file.name)
-            os.makedirs("temp", exist_ok=True)
-            with open(temp_path, "wb") as f:
-                f.write(uploaded_file.getbuffer())
+        if "processed_files" not in st.session_state:
+            st.session_state.processed_files = set()
             
-            try:
-                ingest_document(temp_path)
-                st.success(f"✓ {uploaded_file.name} Verified")
-                time.sleep(1)
-                st.rerun()
-            except Exception as e:
-                st.error(f"Ingestion Failure: {e}")
+        if uploaded_file.name not in st.session_state.processed_files:
+            with st.spinner("Decrypting & Indexing..."):
+                temp_path = os.path.join("temp", uploaded_file.name)
+                os.makedirs("temp", exist_ok=True)
+                with open(temp_path, "wb") as f:
+                    f.write(uploaded_file.getbuffer())
+                
+                try:
+                    ingest_document(temp_path)
+                    st.session_state.processed_files.add(uploaded_file.name)
+                    st.success(f"✓ {uploaded_file.name} Verified")
+                    time.sleep(1)
+                    st.rerun()
+                except Exception as e:
+                    st.error(f"Ingestion Failure: {e}")
+        else:
+            st.info(f"ℹ️ {uploaded_file.name} is already indexed.")
 
     st.markdown("---")
     st.markdown("**Operational Controls**")
@@ -218,8 +225,8 @@ for message in st.session_state.messages:
             feedback_key = f"feedback_{st.session_state.messages.index(message)}"
             feedback = st.feedback("thumbs", key=feedback_key)
             if feedback is not None:
-                score = 1 if feedback == 0 else -1 
-                final_score = 1 if feedback == 0 else -1
+                # Streamlit "thumbs": 0 is Down, 1 is Up
+                final_score = 1 if feedback == 1 else -1
                 
                 if "logged_feedback" not in st.session_state:
                     st.session_state.logged_feedback = set()

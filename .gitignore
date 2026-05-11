@@ -156,7 +156,7 @@ Thumbs.db
 # Project specific
 eval_results.json
 *.log
-checkpoint.sqlite
+checkpoints.sqlite
 chroma_db/
 *.db
 temp/
